@@ -6,13 +6,14 @@ type LimitLabelsProps = {
   min: number;
   max: number;
   inverted: boolean;
+  formatLabel: (value: number) => number | string;
 };
 
-function LimitLabels({ min, max, inverted }: LimitLabelsProps) {
+function LimitLabels({ min, max, inverted, formatLabel }: LimitLabelsProps) {
   return (
     <div css={limitLabelsWrapperStyle()}>
-      <Text css={limitLabelStyle({ inverted })}>{min}</Text>
-      <Text css={limitLabelStyle({ inverted })}>{max}</Text>
+      <Text css={limitLabelStyle({ inverted })}>{formatLabel(min)}</Text>
+      <Text css={limitLabelStyle({ inverted })}>{formatLabel(max)}</Text>
     </div>
   );
 }

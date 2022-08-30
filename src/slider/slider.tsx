@@ -13,6 +13,7 @@ type SliderProps = {
   step?: number;
   disabled?: boolean;
   hideLabels?: boolean;
+  formatLabel?: (value: number) => number | string;
   inverted?: boolean;
   'aria-label': string;
 };
@@ -27,6 +28,7 @@ function Slider({
   hideLabels = false,
   inverted = false,
   'aria-label': ariaLabel,
+  formatLabel = (value) => value,
 }: SliderProps) {
   if (value.length > 2 || value.length === 0) {
     throw new Error('Array of only one or two Slider values is supported.');
@@ -34,7 +36,13 @@ function Slider({
 
   return (
     <div>
-      {!hideLabels && <ValueLabels value={value} inverted={inverted} />}
+      {!hideLabels && (
+        <ValueLabels
+          value={value}
+          inverted={inverted}
+          formatLabel={formatLabel}
+        />
+      )}
       <Range
         {...{ values: value, min, max, step, onChange, disabled }}
         renderTrack={({ props, children }) => (
@@ -42,14 +50,21 @@ function Slider({
             {children}
           </Track>
         )}
-        renderThumb={({ props, isDragged }) => (
+        renderThumb={({ props, value, isDragged }) => (
           <Thumb
             {...props}
-            {...{ isDragged, disabled, inverted, 'aria-label': ariaLabel }}
+            {...{
+              value,
+              isDragged,
+              disabled,
+              inverted,
+              'aria-label': ariaLabel,
+              formatLabel,
+            }}
           />
         )}
       />
-      {!hideLabels && <LimitLabels min={min} max={max} inverted={inverted} />}
+      {!hideLabels && <LimitLabels {...{ min, max, inverted, formatLabel }} />}
     </div>
   );
 }
