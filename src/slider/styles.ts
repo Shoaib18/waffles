@@ -1,8 +1,6 @@
-import { getTrackBackground } from 'react-range';
 import { css } from '@emotion/react';
 
 import { tokens } from '../tokens';
-import { hexToRgba } from '../helpers';
 
 const THUMB_DOT_RADIUS = 12;
 
@@ -22,25 +20,7 @@ export function trackStyle({ disabled }: TrackStyleOptions) {
   `;
 }
 
-type TrackLineStyleOptions = {
-  value: number[];
-  min: number;
-  max: number;
-  inverted: boolean;
-};
-
-export function trackLineStyle({
-  value,
-  min,
-  max,
-  inverted,
-}: TrackLineStyleOptions) {
-  const filledColor = inverted ? tokens.colors.blue : tokens.colors.blueDark;
-  const backgroundColor = hexToRgba(
-    inverted ? tokens.colors.white : tokens.colors.navy,
-    0.15,
-  );
-
+export function trackLineStyle() {
   return css`
     // Shift track line slightly so thumb aligns with labels nicer
     width: calc(100% + ${THUMB_DOT_RADIUS}px);
@@ -48,15 +28,6 @@ export function trackLineStyle({
     margin-right: -${THUMB_DOT_RADIUS / 2}px;
     height: 4px;
     border-radius: 2px;
-    background: ${getTrackBackground({
-      values: value,
-      min,
-      max,
-      colors:
-        value.length == 1
-          ? [filledColor, backgroundColor]
-          : [backgroundColor, filledColor, backgroundColor],
-    })};
   `;
 }
 
