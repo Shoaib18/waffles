@@ -1,14 +1,14 @@
 import { Text } from '../text';
 
 import { valueLabelsWrapperStyle, valueLabelStyle } from './styles';
+import { useSlider } from './slider-context';
 
 type ValueLabelsProps = {
-  value: number[];
-  inverted: boolean;
   formatLabel: (value: number) => number | string;
 };
 
-function ValueLabels({ value, inverted, formatLabel }: ValueLabelsProps) {
+function ValueLabels({ formatLabel }: ValueLabelsProps) {
+  const { value, inverted } = useSlider();
   const isSingleValue = value.length === 1;
 
   return (

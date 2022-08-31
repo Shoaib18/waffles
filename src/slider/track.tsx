@@ -5,19 +5,16 @@ import { tokens } from '../tokens';
 import { hexToRgba } from '../helpers';
 
 import { trackStyle, trackLineStyle } from './styles';
+import { useSlider } from './slider-context';
 
-type TrackProps = {
-  value: number[];
-  min: number;
-  max: number;
-  disabled: boolean;
-  inverted: boolean;
-} & React.HTMLAttributes<HTMLDivElement>;
+type TrackProps = React.HTMLAttributes<HTMLDivElement>;
 
 function TrackInternal(
-  { value, min, max, disabled, inverted, children, ...restProps }: TrackProps,
+  { children, ...restProps }: TrackProps,
   ref: React.Ref<HTMLDivElement>,
 ) {
+  const { value, min, max, disabled, inverted } = useSlider();
+
   const filledColor = inverted ? tokens.colors.blue : tokens.colors.blueDark;
   const backgroundColor = hexToRgba(
     inverted ? tokens.colors.white : tokens.colors.navy,

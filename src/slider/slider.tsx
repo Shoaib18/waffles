@@ -3,6 +3,7 @@ import { Range } from 'react-range';
 import ValueLabels from './value-labels';
 import Track from './track';
 import Thumb from './thumb';
+import { SliderProvider } from './slider-context';
 import LimitLabels from './limit-labels';
 import Inputs from './inputs';
 
@@ -38,50 +39,32 @@ function Slider({
   }
 
   return (
-    <div>
-      {showInputs && (
-        <Inputs
-          {...{
-            value,
-            onChange,
-            min,
-            max,
-            label: ariaLabel,
-            disabled,
-            inverted,
-          }}
-        />
-      )}
-      {!hideLabels && !showInputs && (
-        <ValueLabels
-          value={value}
-          inverted={inverted}
-          formatLabel={formatLabel}
-        />
-      )}
-      <Range
-        {...{ values: value, min, max, step, onChange, disabled }}
-        renderTrack={({ props, children }) => (
-          <Track {...props} {...{ value, min, max, disabled, inverted }}>
-            {children}
-          </Track>
+    <SliderProvider {...{ value, min, max, disabled, inverted }}>
+      <div>
+        {showInputs && <Inputs onChange={onChange} label={ariaLabel} />}
+        {!hideLabels && !showInputs && (
+          <ValueLabels formatLabel={formatLabel} />
         )}
-        renderThumb={({ props, value, isDragged }) => (
-          <Thumb
-            {...props}
-            {...{
-              value,
-              isDragged,
-              disabled,
-              inverted,
-              'aria-label': ariaLabel,
-              formatLabel,
-            }}
-          />
-        )}
-      />
-      {!hideLabels && <LimitLabels {...{ min, max, inverted, formatLabel }} />}
-    </div>
+        <Range
+          {...{ values: value, min, max, step, onChange, disabled }}
+          renderTrack={({ props, children }) => (
+            <Track {...props}>{children}</Track>
+          )}
+          renderThumb={({ props, value, isDragged }) => (
+            <Thumb
+              {...props}
+              {...{
+                value,
+                isDragged,
+                'aria-label': ariaLabel,
+                formatLabel,
+              }}
+            />
+          )}
+        />
+        {!hideLabels && <LimitLabels formatLabel={formatLabel} />}
+      </div>
+    </SliderProvider>
   );
 }
 

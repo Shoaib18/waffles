@@ -3,26 +3,15 @@ import React, { useState, useEffect } from 'react';
 import { Input } from '../input';
 
 import { inputsWrapperStyle } from './styles';
+import { useSlider } from './slider-context';
 
 type InputsProps = {
-  value: number[];
   onChange: (value: number[]) => void;
-  min: number;
-  max: number;
   label: string;
-  disabled: boolean;
-  inverted: boolean;
 };
 
-function Inputs({
-  value,
-  onChange,
-  min,
-  max,
-  label,
-  disabled,
-  inverted,
-}: InputsProps) {
+function Inputs({ onChange, label }: InputsProps) {
+  const { value, min, max, disabled, inverted } = useSlider();
   // Keep separate state for inputs, because space and minus chars must be supported
   const [derivedValue, setDerivedValue] =
     useState<Array<string | number>>(value);

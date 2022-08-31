@@ -1,15 +1,15 @@
 import { Text } from '../text';
 
 import { limitLabelsWrapperStyle, limitLabelStyle } from './styles';
+import { useSlider } from './slider-context';
 
 type LimitLabelsProps = {
-  min: number;
-  max: number;
-  inverted: boolean;
   formatLabel: (value: number) => number | string;
 };
 
-function LimitLabels({ min, max, inverted, formatLabel }: LimitLabelsProps) {
+function LimitLabels({ formatLabel }: LimitLabelsProps) {
+  const { min, max, inverted } = useSlider();
+
   return (
     <div css={limitLabelsWrapperStyle()}>
       <Text css={limitLabelStyle({ inverted })}>{formatLabel(min)}</Text>

@@ -3,26 +3,24 @@ import { mergeProps } from '@react-aria/utils';
 import { useFocusRing } from '@react-aria/focus';
 
 import { thumbStyle, thumbDotStyle } from './styles';
+import { useSlider } from './slider-context';
 
 type ThumbProps = {
   value: number;
   isDragged: boolean;
-  disabled: boolean;
-  inverted: boolean;
   formatLabel: (value: number) => number | string;
 } & React.HTMLAttributes<HTMLDivElement>;
 
 function ThumbInternal(
   {
-    value,
+    value, // Just a single value passed via rander prop, not global array one
     isDragged,
-    disabled,
-    inverted,
     formatLabel,
     ...restProps
   }: ThumbProps,
   ref: React.Ref<HTMLDivElement>,
 ) {
+  const { disabled, inverted } = useSlider();
   const { focusProps, isFocusVisible } = useFocusRing();
 
   return (
