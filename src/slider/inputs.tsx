@@ -10,10 +10,19 @@ type InputsProps = {
   min: number;
   max: number;
   label: string;
+  disabled: boolean;
   inverted: boolean;
 };
 
-function Inputs({ value, onChange, min, max, label, inverted }: InputsProps) {
+function Inputs({
+  value,
+  onChange,
+  min,
+  max,
+  label,
+  disabled,
+  inverted,
+}: InputsProps) {
   // Keep separate state for inputs, because space and minus chars must be supported
   const [derivedValue, setDerivedValue] =
     useState<Array<string | number>>(value);
@@ -34,7 +43,11 @@ function Inputs({ value, onChange, min, max, label, inverted }: InputsProps) {
     if (inputValue === '' || inputValue === '-') {
       setDerivedValue([inputValue, value[1]]);
     } else if (!Number.isNaN(parsedValue)) {
-      if (parsedValue >= min && parsedValue <= value[1]) {
+      if (isSingleInput) {
+        if (parsedValue >= min && parsedValue <= max) {
+          onChange([parsedValue]);
+        }
+      } else if (parsedValue >= min && parsedValue <= value[1]) {
         onChange([parsedValue, value[1]]);
       }
       setDerivedValue([parsedValue, value[1]]);
@@ -67,6 +80,7 @@ function Inputs({ value, onChange, min, max, label, inverted }: InputsProps) {
             ? derivedValue[0] < min || derivedValue[0] > max
             : derivedValue[0] < min || derivedValue[0] > value[1]
         }
+        disabled={disabled}
         inverted={inverted}
         aria-label={label}
       />
@@ -75,6 +89,7 @@ function Inputs({ value, onChange, min, max, label, inverted }: InputsProps) {
           value={derivedValue[1]}
           onChange={handleSecondInputOnChange}
           error={derivedValue[1] > max || derivedValue[1] < value[0]}
+          disabled={disabled}
           inverted={inverted}
           aria-label={label}
         />

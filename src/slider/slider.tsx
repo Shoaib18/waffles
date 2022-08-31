@@ -41,7 +41,15 @@ function Slider({
     <div>
       {showInputs && (
         <Inputs
-          {...{ value, onChange, min, max, label: ariaLabel, inverted }}
+          {...{
+            value,
+            onChange,
+            min,
+            max,
+            label: ariaLabel,
+            disabled,
+            inverted,
+          }}
         />
       )}
       {!hideLabels && !showInputs && (
