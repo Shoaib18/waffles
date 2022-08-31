@@ -4,6 +4,7 @@ import ValueLabels from './value-labels';
 import Track from './track';
 import Thumb from './thumb';
 import LimitLabels from './limit-labels';
+import Inputs from './inputs';
 
 type SliderProps = {
   value: number[];
@@ -13,6 +14,7 @@ type SliderProps = {
   step?: number;
   disabled?: boolean;
   hideLabels?: boolean;
+  showInputs?: boolean;
   formatLabel?: (value: number) => number | string;
   inverted?: boolean;
   'aria-label': string;
@@ -26,6 +28,7 @@ function Slider({
   step = 1,
   disabled = false,
   hideLabels = false,
+  showInputs = false,
   inverted = false,
   'aria-label': ariaLabel,
   formatLabel = (value) => value,
@@ -36,7 +39,12 @@ function Slider({
 
   return (
     <div>
-      {!hideLabels && (
+      {showInputs && (
+        <Inputs
+          {...{ value, onChange, min, max, label: ariaLabel, inverted }}
+        />
+      )}
+      {!hideLabels && !showInputs && (
         <ValueLabels
           value={value}
           inverted={inverted}

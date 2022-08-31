@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import { tokens } from '../tokens';
 
 const THUMB_DOT_RADIUS = 12;
+const INPUT_WIDTH = 60;
 
 type TrackStyleOptions = {
   disabled: boolean;
@@ -93,6 +94,27 @@ export function valueLabelsWrapperStyle({
   return css`
     display: flex;
     justify-content: ${isSingleValue ? 'flex-end' : 'space-between'};
+  `;
+}
+
+type InputsWrapperStyleOptions = {
+  isSingleInput: boolean;
+};
+
+export function inputsWrapperStyle({
+  isSingleInput,
+}: InputsWrapperStyleOptions) {
+  return css`
+    ${isSingleInput
+      ? css`
+          width: ${INPUT_WIDTH}px;
+          margin-left: calc(100% - ${INPUT_WIDTH}px);
+        `
+      : css`
+          display: grid;
+          grid-template-columns: ${INPUT_WIDTH}px ${INPUT_WIDTH}px;
+          gap: calc(100% - ${INPUT_WIDTH * 2}px);
+        `}
   `;
 }
 
