@@ -7,77 +7,72 @@ import { useSlider } from './slider-context';
 
 type InputsProps = {
   onChange: (value: number[]) => void;
+  step: number;
   label: string;
 };
 
-function Inputs({ onChange, label }: InputsProps) {
+function Inputs({ onChange, step, label }: InputsProps) {
   const { value, min, max, disabled, inverted } = useSlider();
-  // Keep separate state for inputs, because space and minus chars must be supported
-  const [derivedValue, setDerivedValue] =
-    useState<Array<string | number>>(value);
+  const isSingleInput = value.length === 1;
+  // Keep separate state for inputs, some characters other than numeric must be covered
+  const [inputValue, setInputValue] = useState<Array<string | number>>(value);
 
   // Sync values from props and inputs
   useEffect(() => {
-    setDerivedValue(value);
+    setInputValue(value);
   }, [value]);
 
-  const isSingleInput = value.length === 1;
-
-  function handleFirstInputOnChange(
+  function handleOnChange(
     event: React.ChangeEvent<HTMLInputElement>,
+    index: number,
   ) {
     const inputValue = event.target.value;
     const parsedValue = parseFloat(event.target.value);
 
-    if (inputValue === '' || inputValue === '-') {
-      setDerivedValue([inputValue, value[1]]);
-    } else if (!Number.isNaN(parsedValue)) {
+    if (inputValue.match(/^-?([0-9]{1,})?(\.)?([0-9]{1,})?$/)) {
       if (isSingleInput) {
-        if (parsedValue >= min && parsedValue <= max) {
-          onChange([parsedValue]);
-        }
-      } else if (parsedValue >= min && parsedValue <= value[1]) {
-        onChange([parsedValue, value[1]]);
+        setInputValue([inputValue]);
+      } else {
+        setInputValue(
+          value.map((val, valIndex) => {
+            return index === valIndex ? inputValue : val;
+          }),
+        );
       }
-      setDerivedValue([parsedValue, value[1]]);
     }
-  }
 
-  function handleSecondInputOnChange(
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) {
-    const inputValue = event.target.value;
-    const parsedValue = parseFloat(event.target.value);
-
-    if (inputValue === '' || inputValue === '-') {
-      setDerivedValue([value[0], inputValue]);
-    } else if (!Number.isNaN(parsedValue)) {
-      if (parsedValue >= value[0] && parsedValue <= max) {
-        onChange([value[0], parsedValue]);
+    if (
+      !Number.isNaN(parsedValue) &&
+      !inputValue.endsWith('.') &&
+      parsedValue % step === 0
+    ) {
+      if (index === 0) {
+        if (isSingleInput && parsedValue >= min && parsedValue <= max) {
+          onChange([parsedValue]);
+        } else if (parsedValue >= min && parsedValue <= value[1]) {
+          onChange([parsedValue, value[1]]);
+        }
+      } else {
+        if (parsedValue >= value[0] && parsedValue <= max) {
+          onChange([value[0], parsedValue]);
+        }
       }
-      setDerivedValue([value[0], parsedValue]);
     }
   }
 
   return (
     <div css={inputsWrapperStyle({ isSingleInput })}>
       <Input
-        value={derivedValue[0]}
-        onChange={handleFirstInputOnChange}
-        error={
-          isSingleInput
-            ? derivedValue[0] < min || derivedValue[0] > max
-            : derivedValue[0] < min || derivedValue[0] > value[1]
-        }
+        value={inputValue[0]}
+        onChange={(event) => handleOnChange(event, 0)}
         disabled={disabled}
         inverted={inverted}
         aria-label={label}
       />
       {!isSingleInput && (
         <Input
-          value={derivedValue[1]}
-          onChange={handleSecondInputOnChange}
-          error={derivedValue[1] > max || derivedValue[1] < value[0]}
+          value={inputValue[1]}
+          onChange={(event) => handleOnChange(event, 1)}
           disabled={disabled}
           inverted={inverted}
           aria-label={label}

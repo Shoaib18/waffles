@@ -41,7 +41,9 @@ function Slider({
   return (
     <SliderProvider {...{ value, min, max, disabled, inverted }}>
       <div>
-        {showInputs && <Inputs onChange={onChange} label={ariaLabel} />}
+        {showInputs && (
+          <Inputs onChange={onChange} step={step} label={ariaLabel} />
+        )}
         {!hideLabels && !showInputs && (
           <ValueLabels formatLabel={formatLabel} />
         )}
